@@ -1,25 +1,25 @@
 export type GetSubscriptionsResponse = {
   date: string;
-  subscriptions: Subscription[];
+  subscriptions: ExtSubscription[];
 }[];
 
-export interface Subscription {
+export interface ExtSubscription {
   id: string;
-  items: SubscriptionItem[];
-  status: SubscriptionStatus;
-  interval: SubscriptionInterval;
-  currency: SubscriptionCurrency;
+  items: ExtSubscriptionItem[];
+  status: ExtSubscriptionStatus;
+  interval: ExtSubscriptionInterval;
+  currency: ExtSubscriptionCurrency;
   percent_off: number;
 }
 
-export interface SubscriptionItem {
+export interface ExtSubscriptionItem {
   id: string;
   module: string;
   unit_amount: number;
   quantity: number;
 }
 
-export enum SubscriptionStatus {
+export enum ExtSubscriptionStatus {
   ACTIVE = 'active',
   PAST_DUE = 'past_due',
   UNPAID = 'unpaid',
@@ -29,12 +29,12 @@ export enum SubscriptionStatus {
   TRIALING = 'trialing',
 }
 
-export enum SubscriptionInterval {
+export enum ExtSubscriptionInterval {
   MONTHLY = 'monthly',
   YEARLY = 'yearly',
 }
 
-export enum SubscriptionCurrency {
+export enum ExtSubscriptionCurrency {
   USD = 'usd',
   EUR = 'eur',
 }

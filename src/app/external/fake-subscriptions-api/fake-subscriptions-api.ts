@@ -11,7 +11,7 @@ export const FakeSubscriptionsApi = {
 
     return res.data.map((monthlyData) => ({
       ...monthlyData,
-      date: FakeSubscriptionsApiUtils.parseApiDate(monthlyData.date),
+      date: FakeSubscriptionsApiUtils.parseDateToISO(monthlyData.date),
     }));
   },
 };

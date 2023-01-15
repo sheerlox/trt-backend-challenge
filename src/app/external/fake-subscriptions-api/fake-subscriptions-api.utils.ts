@@ -1,19 +1,20 @@
 import { DateTime } from 'luxon';
+import { dateTimeToMonthISO } from '../../utils/date.utils';
 
 /**
- * format date from the FakeSubscriptions API
+ * parse date from the FakeSubscriptions API to ISO 8601
  *
- * @param apiDate (example: Feb 22)
- * @returns formattedDate (YYYY-MM)
+ * @param dateString date in the format "MMM yy" (e.g. Feb 22)
+ * @returns date formatted as YYYY-MM (e.g. 2022-02)
  */
-const parseApiDate = (apiDate: string): string => {
-  const date = DateTime.fromFormat(apiDate, 'MMM yy');
+const parseDateToISO = (dateString: string): string => {
+  const date = DateTime.fromFormat(dateString, 'MMM yy');
 
-  if (!date.isValid) throw new Error('Invalid date provided');
+  if (!date.isValid) throw new Error(`Invalid date provided: ${dateString}`);
 
-  return date.year.toString() + '-' + date.month.toString().padStart(2, '0');
+  return dateTimeToMonthISO(date);
 };
 
 export const FakeSubscriptionsApiUtils = {
-  parseApiDate,
+  parseDateToISO,
 };
