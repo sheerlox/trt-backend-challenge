@@ -1,7 +1,8 @@
 import app from './app/index';
+import config from './app/utils/config';
 
-const port = process.env.PORT ? parseInt(process.env.PORT) : 3000;
-
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+app.listen(config.PORT, () => {
+  console.log(`Server is running at http://localhost:${config.PORT}`);
 });
+
+export default app;
