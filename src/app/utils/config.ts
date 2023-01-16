@@ -5,16 +5,10 @@ dotenv.config();
 
 const config = envsafe({
   NODE_ENV: str({
-    devDefault: 'development',
     choices: ['development', 'test', 'production'],
   }),
-  PORT: port({
-    devDefault: 3000,
-    example: 80,
-  }),
-  SUBSCRIPTIONS_ENDPOINT: url({
-    devDefault: 'https://fake-subscriptions-api.fly.dev/api/subscriptions',
-  }),
+  PORT: port(),
+  SUBSCRIPTIONS_ENDPOINT: url(),
 });
 
 export default config;

@@ -11,10 +11,10 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
-    "start": "NODE_ENV=development nodemon",
+    "start": "ts-node src/server.ts",
     "start:dev": "NODE_ENV=development nodemon",
-    "start:prod": "node dist/server.js",
-    "test": "jest",
+    "start:prod": "NODE_ENV=production node dist/server.js",
+    "test": "jest --verbose",
     "test:watch": "jest --watch",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "format": "prettier --write \"src/**/*.ts\"",
