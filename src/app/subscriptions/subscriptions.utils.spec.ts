@@ -1,110 +1,110 @@
 import { ExtSubscription } from '../external/fake-subscriptions-api/fake-subscriptions-api.interfaces';
 import { computeSubscriptionMrr } from './subscriptions.utils';
 
-describe('Subscriptions Service', () => {
+describe('Subscriptions Utils', () => {
+  const subscriptionCanceled = {
+    id: 'sub-1',
+    status: 'canceled',
+    items: [
+      {
+        id: 'sub-1-item-1',
+        module: 'awareness',
+        unit_amount: 3990,
+        quantity: 12,
+      },
+    ],
+    interval: 'yearly',
+    currency: 'usd',
+    percent_off: 0,
+  } as ExtSubscription;
+
+  const subscriptionYearlyBilling = {
+    id: 'sub-1',
+    status: 'active',
+    items: [
+      {
+        id: 'sub-1-item-1',
+        module: 'awareness',
+        unit_amount: 3990,
+        quantity: 12,
+      },
+    ],
+    interval: 'yearly',
+    currency: 'usd',
+    percent_off: 0,
+  } as ExtSubscription;
+
+  const subscriptionMonthlyBilling = {
+    id: 'sub-1',
+    status: 'active',
+    items: [
+      {
+        id: 'sub-1-item-1',
+        module: 'awareness',
+        unit_amount: 399,
+        quantity: 100,
+      },
+    ],
+    interval: 'monthly',
+    currency: 'usd',
+    percent_off: 0,
+  } as ExtSubscription;
+
+  const subscriptionWithDiscount = {
+    id: 'sub-1',
+    status: 'active',
+    items: [
+      {
+        id: 'sub-1-item-1',
+        module: 'awareness',
+        unit_amount: 399,
+        quantity: 100,
+      },
+    ],
+    interval: 'monthly',
+    currency: 'usd',
+    percent_off: 10,
+  } as ExtSubscription;
+
+  const subscriptionWithMultipleItems = {
+    id: 'sub-2',
+    status: 'active',
+    items: [
+      {
+        id: 'sub-2-item-1',
+        module: 'awareness',
+        unit_amount: 399,
+        quantity: 160,
+      },
+      {
+        id: 'sub-2-item-2',
+        module: 'simulation',
+        unit_amount: 299,
+        quantity: 150,
+      },
+    ],
+    interval: 'monthly',
+    currency: 'eur',
+    percent_off: 15,
+  } as ExtSubscription;
+
+  const subscriptionInEUR = {
+    id: 'sub-1',
+    status: 'active',
+    items: [
+      {
+        id: 'sub-1-item-1',
+        module: 'awareness',
+        unit_amount: 399,
+        quantity: 100,
+      },
+    ],
+    interval: 'monthly',
+    currency: 'eur',
+    percent_off: 0,
+  } as ExtSubscription;
+
   describe('computeSubscriptionMrr', () => {
-    const subscriptionCanceled = {
-      id: 'sub-1',
-      status: 'canceled',
-      items: [
-        {
-          id: 'sub-1-item-1',
-          module: 'awareness',
-          unit_amount: 3990,
-          quantity: 12,
-        },
-      ],
-      interval: 'yearly',
-      currency: 'usd',
-      percent_off: 0,
-    } as ExtSubscription;
-
-    const subscriptionYearlyBilling = {
-      id: 'sub-1',
-      status: 'active',
-      items: [
-        {
-          id: 'sub-1-item-1',
-          module: 'awareness',
-          unit_amount: 3990,
-          quantity: 12,
-        },
-      ],
-      interval: 'yearly',
-      currency: 'usd',
-      percent_off: 0,
-    } as ExtSubscription;
-
-    const subscriptionMonthlyBilling = {
-      id: 'sub-1',
-      status: 'active',
-      items: [
-        {
-          id: 'sub-1-item-1',
-          module: 'awareness',
-          unit_amount: 399,
-          quantity: 100,
-        },
-      ],
-      interval: 'monthly',
-      currency: 'usd',
-      percent_off: 0,
-    } as ExtSubscription;
-
-    const subscriptionWithDiscount = {
-      id: 'sub-1',
-      status: 'active',
-      items: [
-        {
-          id: 'sub-1-item-1',
-          module: 'awareness',
-          unit_amount: 399,
-          quantity: 100,
-        },
-      ],
-      interval: 'monthly',
-      currency: 'usd',
-      percent_off: 10,
-    } as ExtSubscription;
-
-    const subscriptionWithMultipleItems = {
-      id: 'sub-2',
-      status: 'active',
-      items: [
-        {
-          id: 'sub-2-item-1',
-          module: 'awareness',
-          unit_amount: 399,
-          quantity: 160,
-        },
-        {
-          id: 'sub-2-item-2',
-          module: 'simulation',
-          unit_amount: 299,
-          quantity: 150,
-        },
-      ],
-      interval: 'monthly',
-      currency: 'eur',
-      percent_off: 15,
-    } as ExtSubscription;
-
-    const subscriptionInEUR = {
-      id: 'sub-1',
-      status: 'active',
-      items: [
-        {
-          id: 'sub-1-item-1',
-          module: 'awareness',
-          unit_amount: 399,
-          quantity: 100,
-        },
-      ],
-      interval: 'monthly',
-      currency: 'eur',
-      percent_off: 0,
-    } as ExtSubscription;
-
     it('should compute MRR for inactive subscription', () => {
       expect(computeSubscriptionMrr(subscriptionCanceled)).toBe(0);
     });

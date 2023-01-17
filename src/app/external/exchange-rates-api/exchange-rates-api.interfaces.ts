@@ -3,7 +3,7 @@ export interface GetHistoricalExchangeRatesResponse {
   historical: true;
   base: ExtEchangeRatesCurrency;
   date: string;
-  rates: Record<ExtEchangeRatesCurrency, number>;
+  rates: Partial<Record<ExtEchangeRatesCurrency, number>>;
 }
 
 export enum ExtEchangeRatesCurrency {

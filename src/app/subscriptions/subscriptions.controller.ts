@@ -32,7 +32,9 @@ export const getSubscriptionsByMonth: AsyncController<
 > = async (req, res) => {
   validateMonthISOString(req.params.date);
 
-  const result = SubscriptionsService.getSubscriptionsByMonth(req.params.date);
+  const result = SubscriptionsService.getSubscriptionsByMonth(
+    DateTime.fromISO(req.params.date),
+  );
 
   if (!result) {
     return res

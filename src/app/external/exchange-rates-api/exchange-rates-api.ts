@@ -15,8 +15,10 @@ const createExchangeRatesApi = () => {
     sourceSymbols: ExtEchangeRatesCurrency[],
     targetSymbol: ExtEchangeRatesCurrency,
     dateTime: DateTime,
-  ): Promise<Record<ExtEchangeRatesCurrency, number>> => {
-    const exchangeRates = {} as Record<ExtEchangeRatesCurrency, number>;
+  ): Promise<Partial<Record<ExtEchangeRatesCurrency, number>>> => {
+    const exchangeRates = {} as Partial<
+      Record<ExtEchangeRatesCurrency, number>
+    >;
     const date = dateTime.toISODate();
 
     const missingSymbols: ExtEchangeRatesCurrency[] = [];
@@ -43,17 +45,22 @@ const createExchangeRatesApi = () => {
       },
     );
 
-    if (!data.success) throw new Error('Exchange rates API error.');
+    if (!data.success) throw new Error('Exchange Rates API error.');
 
     for (const symbol of missingSymbols) {
-      const cacheKey = `${symbol}_${targetSymbol}_${date}`;
+      const rate = data.rates[symbol];
+      if (rate === undefined) {
+        throw new Error(
+          `Requested rate for ${targetSymbol}_${symbol} missing from Exchange Rates API response.`,
+        );
+      }
 
       // rates needs to be reversed since we query them
       // in reverse to only have to make one query
       const precision = 1000000;
-      const reversedRate =
-        Math.round((1 / data.rates[symbol]) * precision) / precision;
+      const reversedRate = Math.round((1 / rate) * precision) / precision;
 
+      const cacheKey = `${symbol}_${targetSymbol}_${date}`;
       cache[cacheKey] = reversedRate;
       exchangeRates[symbol] = reversedRate;
     }

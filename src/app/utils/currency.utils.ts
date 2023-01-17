@@ -1,5 +1,3 @@
-import { DateTime } from 'luxon';
-import { ExchangeRatesApi } from '../external/exchange-rates-api/exchange-rates-api';
 import { ExtEchangeRatesCurrency } from '../external/exchange-rates-api/exchange-rates-api.interfaces';
 import { ExtSubscriptionCurrency } from '../external/fake-subscriptions-api/fake-subscriptions-api.interfaces';
 
@@ -25,16 +23,4 @@ export const symbolToCurrency = (
     case ExtEchangeRatesCurrency.USD:
       return ExtSubscriptionCurrency.USD;
   }
-};
-
-export const getAllExchangeRatesToUSD = async (dateTime: DateTime) => {
-  const supportedSymbols = Object.values(ExtSubscriptionCurrency)
-    .filter((curr) => curr !== ExtSubscriptionCurrency.USD)
-    .map((curr) => currencyToSymbol(curr));
-
-  return ExchangeRatesApi.getHistoricalExchangeRates(
-    supportedSymbols,
-    currencyToSymbol(ExtSubscriptionCurrency.USD),
-    dateTime,
-  );
 };

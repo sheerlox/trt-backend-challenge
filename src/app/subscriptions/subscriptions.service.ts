@@ -1,12 +1,6 @@
 import { DateTime } from 'luxon';
-import {
-  ExtSubscription,
-  ExtSubscriptionCurrency,
-} from '../external/fake-subscriptions-api/fake-subscriptions-api.interfaces';
-import {
-  currencyToSymbol,
-  getAllExchangeRatesToUSD,
-} from '../utils/currency.utils';
+import { ExtSubscription } from '../external/fake-subscriptions-api/fake-subscriptions-api.interfaces';
+import { currencyToSymbol } from '../utils/currency.utils';
 import { dateTimeToMonthISO, getPreviousMonth } from '../utils/date.utils';
 import { Subscription } from './subscriptions.interfaces';
 import {
@@ -14,18 +8,21 @@ import {
   convertStoreToArray,
   subscriptionsRepository,
 } from './subscriptions.repository';
-import { computeSubscriptionMrr } from './subscriptions.utils';
+import {
+  computeSubscriptionMrr,
+  getAllExchangeRatesToUSD,
+} from './subscriptions.utils';
 
 export const importSubscriptions = async (
   dateTime: DateTime,
   subscriptions: ExtSubscription[],
 ) => {
   const date = dateTimeToMonthISO(dateTime);
+  const exchangeRates = await getAllExchangeRatesToUSD(dateTime);
+
   const previousMonthData = subscriptionsRepository.findByDate(
     getPreviousMonth(date),
   );
-
-  const exchangeRates = await getAllExchangeRatesToUSD(dateTime);
 
   const subscriptionsById: Record<string, Subscription> = {};
   let totalMrr = 0;
@@ -33,9 +30,7 @@ export const importSubscriptions = async (
   for (const subscription of subscriptions) {
     const subscriptionMrr = computeSubscriptionMrr(
       subscription,
-      subscription.currency !== ExtSubscriptionCurrency.USD
-        ? exchangeRates[currencyToSymbol(subscription.currency)]
-        : undefined,
+      exchangeRates[currencyToSymbol(subscription.currency)],
     );
 
     const pastSubscriptionMrr =
@@ -68,8 +63,9 @@ export const getAllSubscriptions = () => {
   return convertStoreToArray(result);
 };
 
-export const getSubscriptionsByMonth = (month: string) => {
-  const result = subscriptionsRepository.findByDate(month);
+export const getSubscriptionsByMonth = (dateTime: DateTime) => {
+  const date = dateTimeToMonthISO(dateTime);
+  const result = subscriptionsRepository.findByDate(date);
 
   if (!result) return result;
 

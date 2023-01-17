@@ -2,7 +2,7 @@ import { DateTime } from 'luxon';
 
 export const validateMonthISOString = (dateString: string): void => {
   if (!dateString.match(/^\d{4}-\d{2}$/))
-    throw new Error('Invalid date provided');
+    throw new Error('Invalid date provided. Expected format: YYYY-MM');
 };
 
 export const getPreviousMonth = (dateString: string): string => {
