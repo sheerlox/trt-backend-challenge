@@ -59,7 +59,7 @@ export const importSubscriptions = async (
   };
 
   subscriptionsRepository.insert(result);
-  return result;
+  return convertStoreEntryToArray(result);
 };
 
 export const getAllSubscriptions = () => {
