@@ -1,32 +1,43 @@
+import { DateTime } from 'luxon';
 import {
   ExtSubscription,
   ExtSubscriptionCurrency,
-  ExtSubscriptionInterval as Interval,
-  ExtSubscriptionStatus as Status,
 } from '../external/fake-subscriptions-api/fake-subscriptions-api.interfaces';
-import { getPreviousMonth } from '../utils/date.utils';
+import {
+  currencyToSymbol,
+  getAllExchangeRatesToUSD,
+} from '../utils/currency.utils';
+import { dateTimeToMonthISO, getPreviousMonth } from '../utils/date.utils';
 import { Subscription } from './subscriptions.interfaces';
 import {
   convertStoreEntryToArray,
   convertStoreToArray,
   subscriptionsRepository,
 } from './subscriptions.repository';
+import { computeSubscriptionMrr } from './subscriptions.utils';
 
-export const importSubscriptions = (
-  date: string,
+export const importSubscriptions = async (
+  dateTime: DateTime,
   subscriptions: ExtSubscription[],
 ) => {
+  const date = dateTimeToMonthISO(dateTime);
   const previousMonthData = subscriptionsRepository.findByDate(
     getPreviousMonth(date),
   );
 
+  const exchangeRates = await getAllExchangeRatesToUSD(dateTime);
+
   const subscriptionsById: Record<string, Subscription> = {};
-  let monthlyMrr = 0;
+  let totalMrr = 0;
 
   for (const subscription of subscriptions) {
-    if (subscription.currency !== ExtSubscriptionCurrency.USD) continue;
+    const subscriptionMrr = computeSubscriptionMrr(
+      subscription,
+      subscription.currency !== ExtSubscriptionCurrency.USD
+        ? exchangeRates[currencyToSymbol(subscription.currency)]
+        : undefined,
+    );
 
-    const subscriptionMrr = computeSubscriptionMrr(subscription);
     const pastSubscriptionMrr =
       previousMonthData?.subscriptions[subscription.id]?.mrr ?? 0;
     const subscriptionMrrDiff = subscriptionMrr - pastSubscriptionMrr;
@@ -37,14 +48,14 @@ export const importSubscriptions = (
       mrr_difference: subscriptionMrrDiff,
     };
 
-    monthlyMrr += subscriptionMrr;
+    totalMrr += subscriptionMrr;
   }
 
   const result = {
     date,
     subscriptions: subscriptionsById,
-    total_mrr: monthlyMrr,
-    total_mrr_difference: monthlyMrr - (previousMonthData?.total_mrr ?? 0),
+    total_mrr: totalMrr,
+    total_mrr_difference: totalMrr - (previousMonthData?.total_mrr ?? 0),
   };
 
   subscriptionsRepository.insert(result);
@@ -63,24 +74,4 @@ export const getSubscriptionsByMonth = (month: string) => {
   if (!result) return result;
 
   return convertStoreEntryToArray(result);
-};
-
-export const computeSubscriptionMrr = ({
-  status,
-  items,
-  percent_off,
-  interval,
-}: Subscription | ExtSubscription): number => {
-  if (status !== Status.ACTIVE) return 0;
-
-  let result = items.reduce(
-    (acc, item) => acc + item.unit_amount * item.quantity,
-    0,
-  );
-
-  if (percent_off !== 0) result *= (100 - percent_off) / 100;
-
-  if (interval === Interval.YEARLY) result /= 12;
-
-  return Math.round(result);
 };

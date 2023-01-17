@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import { FakeSubscriptionsApi } from '../external/fake-subscriptions-api/fake-subscriptions-api';
 import { validateMonthISOString } from '../utils/date.utils';
 import { AsyncController } from '../utils/express.utils';
@@ -6,8 +7,13 @@ import * as SubscriptionsService from './subscriptions.service';
 export const importSubscriptions: AsyncController = async (_, res) => {
   const responses = await FakeSubscriptionsApi.getSubscriptions();
 
-  const results = responses.map((res) =>
-    SubscriptionsService.importSubscriptions(res.date, res.subscriptions),
+  const results = await Promise.all(
+    responses.map((res) =>
+      SubscriptionsService.importSubscriptions(
+        DateTime.fromISO(res.date),
+        res.subscriptions,
+      ),
+    ),
   );
 
   return res.status(201).json(results);

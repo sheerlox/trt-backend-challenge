@@ -47,4 +47,4 @@ For this exercice's simulation purposes, an import endpoint has been provided on
 - `total_mrr`: month's total MRR
 - `total_mrr_difference`: month's total MRR difference from the previous month
 
-_Note: all values are in cents_
+_Note: all MRR values are in dollar ($) cents_

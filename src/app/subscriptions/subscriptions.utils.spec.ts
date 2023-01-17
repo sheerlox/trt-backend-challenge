@@ -1,5 +1,5 @@
 import { ExtSubscription } from '../external/fake-subscriptions-api/fake-subscriptions-api.interfaces';
-import { computeSubscriptionMrr } from './subscriptions.service';
+import { computeSubscriptionMrr } from './subscriptions.utils';
 
 describe('Subscriptions Service', () => {
   describe('computeSubscriptionMrr', () => {
@@ -89,24 +89,44 @@ describe('Subscriptions Service', () => {
       percent_off: 15,
     } as ExtSubscription;
 
-    it('should compute inactive subscription MRR', () => {
+    const subscriptionInEUR = {
+      id: 'sub-1',
+      status: 'active',
+      items: [
+        {
+          id: 'sub-1-item-1',
+          module: 'awareness',
+          unit_amount: 399,
+          quantity: 100,
+        },
+      ],
+      interval: 'monthly',
+      currency: 'eur',
+      percent_off: 0,
+    } as ExtSubscription;
+
+    it('should compute MRR for inactive subscription', () => {
       expect(computeSubscriptionMrr(subscriptionCanceled)).toBe(0);
     });
 
-    it('should compute yearly subscription MRR', () => {
+    it('should compute MRR for yearly subscription', () => {
       expect(computeSubscriptionMrr(subscriptionYearlyBilling)).toBe(3990);
     });
 
-    it('should compute monthly subscription MRR', () => {
+    it('should compute MRR for monthly subscription', () => {
       expect(computeSubscriptionMrr(subscriptionMonthlyBilling)).toBe(39900);
     });
 
-    it('should compute discounted subscription MRR', () => {
+    it('should compute MRR for discounted subscription', () => {
       expect(computeSubscriptionMrr(subscriptionWithDiscount)).toBe(35910);
     });
 
-    it('should compute subscription with multiple items MRR', () => {
+    it('should compute MRR for subscription with multiple items', () => {
       expect(computeSubscriptionMrr(subscriptionWithMultipleItems)).toBe(92387);
+    });
+
+    it('should compute MRR for subscription in EUR', () => {
+      expect(computeSubscriptionMrr(subscriptionInEUR, 1.068624)).toBe(42638);
     });
   });
 });
