@@ -26,7 +26,7 @@
   },
   "overrides": [
     {
-      "files": ["src/**/*.controller.ts"],
+      "files": ["src/**/*.controller.ts", "src/**/*.spec.ts"],
       "rules": {
         "require-await": "off",
         "@typescript-eslint/require-await": "off"

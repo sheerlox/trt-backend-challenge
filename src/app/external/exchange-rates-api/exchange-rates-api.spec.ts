@@ -1,8 +1,9 @@
+import { jest } from '@jest/globals';
 import axios from 'axios';
 import { DateTime } from 'luxon';
 
 jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+const mockedAxios = jest.mocked(axios);
 mockedAxios.create.mockReturnThis();
 
 import { ExchangeRatesApi } from './exchange-rates-api';

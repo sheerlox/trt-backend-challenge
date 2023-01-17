@@ -2,7 +2,7 @@ import { Subscription } from './subscriptions.interfaces';
 
 type SubscriptionsStore = Record<string, MonthlySubscriptions>;
 
-interface MonthlySubscriptions {
+export interface MonthlySubscriptions {
   date: string;
   subscriptions: Record<string, Subscription>;
   total_mrr: number;
