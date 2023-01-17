@@ -31,6 +31,15 @@
         "require-await": "off",
         "@typescript-eslint/require-await": "off"
       }
+    },
+    {
+      "files": ["src/**/*.spec.ts"],
+      "plugins": ["jest"],
+      "extends": ["plugin:jest/recommended", "plugin:jest/style"],
+      "rules": {
+        "@typescript-eslint/unbound-method": "off",
+        "jest/unbound-method": "error"
+      }
     }
   ]
 }

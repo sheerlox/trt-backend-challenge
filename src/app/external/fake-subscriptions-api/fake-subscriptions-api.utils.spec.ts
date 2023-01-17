@@ -5,9 +5,9 @@ describe('FakeSubscriptions API utils', () => {
 
   describe('parseDateToISO', () => {
     it('should parse dates correctly', () => {
-      expect(parseDateToISO('Feb 22')).toEqual('2022-02');
-      expect(parseDateToISO('Oct 18')).toEqual('2018-10');
-      expect(parseDateToISO('Dec 90')).toEqual('1990-12');
+      expect(parseDateToISO('Feb 22')).toBe('2022-02');
+      expect(parseDateToISO('Oct 18')).toBe('2018-10');
+      expect(parseDateToISO('Dec 90')).toBe('1990-12');
     });
 
     it('should throw an error for invalid date formats', () => {
